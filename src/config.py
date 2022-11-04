@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-DATASET_PATH = ""
+DATASET_PATH = "curated_data/"
 
 
 class GenerationTasks:
