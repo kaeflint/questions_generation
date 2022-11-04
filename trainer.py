@@ -1,37 +1,40 @@
 import os
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+from functools import partial
+import nltk
 from src.dataset_processor import load_all_data
 from src.utils import SmartCollator, get_args, setuptokenizer
 from src.dataset_processor import (
     Multi_taskQuestionGenerationDataset as QuestionGenerationDataset,
 )
 from src.model_utils import CustomTrainer, get_training_arguments, model_init
-from src import config
+from src.config import DATASET_PATH, GenerationTasks
 from transformers.trainer_callback import EarlyStoppingCallback
-from functools import partial
-import nltk
-import random
-import pandas as pd
+
 
 nltk.download("punkt")
 
 
 def generate_tokenizer_and_data(args):
-    
+
     # load the dataset
 
-    train_data_packet = load_all_data(config.DATASET_PATH, mode="train")
-    test_data_packet = load_all_data(config.DATASET_PATH, mode="dev")
+    train_data_packet = load_all_data(DATASET_PATH, mode="train")
+    test_data_packet = load_all_data(DATASET_PATH, mode="dev")
+
+    print(f"Training Data size: {len(train_data_packet)}")
+    print(f"Training Data size: {len(test_data_packet)}")
 
     model_base = args.model_base
     tokenizer = setuptokenizer(
         model_base=model_base,
         special_tokens=[
+            GenerationTasks.vanilla_question_gen,
+            GenerationTasks.context_question_gen,
+            GenerationTasks.question_paraphrase,
             "<section>",
             "</section>",
-            "<generate_questions>",
-            "<generate_answers>",
         ],
     )
     train_dataset = QuestionGenerationDataset(
@@ -53,14 +56,15 @@ if __name__ == "__main__":
     args = get_args()
     train_dataset, test_dataset = generate_tokenizer_and_data(args)
     training_arguments = get_training_arguments(args)
+    
 
     custom_trainer = CustomTrainer(
-        model_init=  partial(model_init, args.model_base, len(train_dataset.tokenizer)),
+        model_init=partial(model_init, args.model_base, len(train_dataset.tokenizer)),
         args=training_arguments,
-        train_dataset =train_dataset,
-        eval_dataset =test_dataset,
-        data_collator = SmartCollator(pad_token_id=train_dataset.tokenizer.pad_token_id, max_len=args.max_seq_len),  # type: ignore
-        callbacks = [EarlyStoppingCallback(early_stopping_patience=6)],
+        train_dataset=train_dataset,
+        eval_dataset=test_dataset,
+        data_collator=SmartCollator(pad_token_id=train_dataset.tokenizer.pad_token_id, max_len=args.max_seq_len),  # type: ignore
+        callbacks=[EarlyStoppingCallback(early_stopping_patience=6)],
     )
-
+    
     custom_trainer.train()
