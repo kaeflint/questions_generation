@@ -11,7 +11,7 @@ from transformers import (
 )
 import torch
 import numpy as np
-
+from nltk.data import load
 from src.model_utils import Features
 boolean = bool
 
@@ -66,7 +66,18 @@ def get_args():
     # warmup_ratio save_total_limit per_device_eval_batch_size
     args = parser.parse_args()
     return args
-
+def get_default_sentence_split():
+    tokenizer = load('tokenizers/punkt/{0}.pickle'.format('english'))
+    tokenizer._params.abbrev_types.add('..')
+    tokenizer._params.abbrev_types.add('No')
+    tokenizer._params.abbrev_types.add('no')
+    tokenizer._params.abbrev_types.add('Dr')
+    tokenizer._params.abbrev_types.add('dr')
+    tokenizer._params.abbrev_types.add('op')
+    tokenizer._params.abbrev_types.add('J.S.')
+    def default_sentence_split(passage):
+        return tokenizer.tokenize(passage)
+    return default_sentence_split
 def setuptokenizer(
     model_base="bert-base-uncased",
     additional_tokens=[],
@@ -140,3 +151,6 @@ class SmartCollator:
                 attention_mask=torch.concat(batch_attention_masks, 0),
                 labels=torch.concat(labels, 0),
             )
+
+
+
