@@ -1,0 +1,13 @@
+nohup python trainer.py \
+--max_seq_len 512 \
+--max_squad_size 80000 \
+--num_train_epochs 4 \
+--lr_scheduler_type cosine \
+--warmup_ratio 0.21 \
+--weight_decay 0.35 \
+--per_device_train_batch_size 8 \
+--per_device_eval_batch_size 8 \
+--save_total_limit 1 \
+--model_base  t5-base \
+--run_id t5_base_model_1 \
+--output_dir trained_models/  >> training_logs.out &
