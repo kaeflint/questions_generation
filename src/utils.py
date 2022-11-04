@@ -13,6 +13,7 @@ import torch
 import numpy as np
 from nltk.data import load
 from src.model_utils import Features
+import spacy
 boolean = bool
 
 def get_args():
@@ -78,6 +79,21 @@ def get_default_sentence_split():
     def default_sentence_split(passage):
         return tokenizer.tokenize(passage)
     return default_sentence_split
+def get_spacy_sentence_split():
+    #load core english library
+    nlp = spacy.load("en_core_web_sm")
+    nlp.tokenizer.add_special_case("No.",[{"ORTH":"No."}])
+    nlp.tokenizer.add_special_case("Op.",[{"ORTH":"Op."}])
+    nlp.tokenizer.add_special_case('..',[{"ORTH":".."}])
+    nlp.tokenizer.add_special_case('No',[{"ORTH":"No"}])
+    nlp.tokenizer.add_special_case('no',[{"ORTH":"no"}])
+    nlp.tokenizer.add_special_case('Dr.',[{"ORTH":"Dr."}])
+    nlp.tokenizer.add_special_case('dr.',[{"ORTH":"dr."}])
+    nlp.tokenizer.add_special_case('J.S.',[{"ORTH":"J.S."}])
+    def spacy_sentence_tokenizer(passage):
+        doc = nlp(passage)
+        return [s.text for s in doc.sents]
+    return nlp, spacy_sentence_tokenizer
 def setuptokenizer(
     model_base="bert-base-uncased",
     additional_tokens=[],
