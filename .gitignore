@@ -15,6 +15,7 @@ triviaqa/
 trained_models/
 trained_models_mtl/
 new_dataset/
+script/
 env/
 build/
 develop-eggs/
