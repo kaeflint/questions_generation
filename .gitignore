@@ -13,6 +13,8 @@ __pycache__/
 datasets/
 triviaqa/
 trained_models/
+trained_models_mtl/
+new_dataset/
 env/
 build/
 develop-eggs/

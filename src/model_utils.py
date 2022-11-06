@@ -61,13 +61,14 @@ def model_init(
 def get_training_arguments(args):
     return TrainingArguments(
         overwrite_output_dir=True,
+        adafactor=False,
+        load_best_model_at_end=True,
         output_dir=args.output_dir + "/" + args.run_id + "/",
         evaluation_strategy=args.evaluation_strategy,#"epoch",
         save_strategy =args.save_strategy,#'epoch',
         lr_scheduler_type=args.lr_scheduler_type,
         learning_rate=args.learning_rate,
-        adafactor=False,
-        load_best_model_at_end=True,
+        
         save_total_limit=args.save_total_limit,
         weight_decay=args.weight_decay,
         warmup_ratio=args.warmup_ratio,

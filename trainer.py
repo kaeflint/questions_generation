@@ -11,6 +11,7 @@ from src.dataset_processor import (
 from src.model_utils import CustomTrainer, get_training_arguments, model_init
 from src.config import DATASET_PATH, GenerationTasks
 from transformers.trainer_callback import EarlyStoppingCallback
+import pickle as pk
 
 
 nltk.download("punkt")
@@ -68,3 +69,4 @@ if __name__ == "__main__":
     )
     
     custom_trainer.train()
+    pk.dump(args,open(args.output_dir + "/" + args.run_id + "/train_args.ap",'wb'))
