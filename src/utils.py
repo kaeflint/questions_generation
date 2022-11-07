@@ -15,6 +15,10 @@ from transformers import (BartTokenizer, BertTokenizer, RobertaTokenizerFast,
 
 from src.model_utils import Features
 
+'''
+<generate_questions> paragraph: Summary : Apart from stable operation of U-1500 for lean feed gases, operation with minimum scrub column reflux feed forward rate can either improve energy efficiency 
+(approx 0.5% improvement in specific power) or increase LNG production (by approx 1.2%).
+'''
 boolean = bool
 def fillTheBlanks(sentence, tag, options):
     assert tag in sentence, f'Error {tag} not found in {sentence}'
