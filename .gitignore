@@ -1,0 +1,9 @@
+trained_models_mtl/
+back_data/
+new_dataset/
+src_old/
+wandb/
+*.out
+curated_data/
+*.pyc
+datasets/

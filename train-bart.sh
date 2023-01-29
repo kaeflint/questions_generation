@@ -1,0 +1,15 @@
+nohup python trainer.py \
+--max_seq_len 530 \
+--num_train_epochs 5 \
+--gradient-accumulation-steps 4 \
+--eval_steps 1000 \
+--lr_scheduler_type cosine \
+--learning_rate 4e-5 \
+--warmup_ratio 0.15 \
+--per_device_train_batch_size 16 \
+--per_device_eval_batch_size 16 \
+--fp16 \
+--save_total_limit 1 \
+--model_base  facebook/bart-base \
+--run_id bart_base_model_fp16_ga4e5 \
+--output_dir trained_models_mtl/  >> training_logs_bart10.out &
